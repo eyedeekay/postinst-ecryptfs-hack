@@ -24,20 +24,22 @@ the logout/login steps and takes care of the rest for you.
 These are the actual commands that it runs in the default configuration. Options
 may be added depending on how I feel.
 
-        sudo useradd -k /etc/pefsh/skel -d /home/.ecryptor
-        echo "if [ -d /home/.ecryptor]; then
-                /usr/bin/pefsh_cleanup > $HOME/pefsh_cleanup_report.log
-        fi
-        ">>$HOME/.profile
+        sudo useradd -k /etc/pefsh/skel -d /home/.ecryptor ecryptor
         PASSWORD=$(apg -n 1)
         echo "The password for the temporary user(ecryptor) will be $PASSWORD. Please write this
         down. This password will only be used for the required duration of encrypting
         your primary user's Home Directory, then both the temporary user and the
         password will be deleted."
         sudo usermod -p $PASSWORD ecryptor
+        sudo usermod -a -G sudo ecryptor
+        echo "if [ -d /home/.ecryptor]; then
+                /usr/bin/pefsh_cleanup > $HOME/pefsh_cleanup_report.log
+        fi
+        ">>$HOME/.profile
         echo "The temporary user(ecryptor) has been created. Now you will be logged out. You
         must log back in as ecryptor to complete the procedure. You will be logged out in 60
         seconds, or you may log out manually."
+        sleep 60
         sudo pkill -u $(\ls /home)
 
 Then you log in as ecryptor with the password you generated, and ecryptor has
