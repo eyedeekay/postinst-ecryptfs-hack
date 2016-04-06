@@ -1,13 +1,14 @@
 #! /bin/sh
-sudo deluser ecryptor
-sudo srm -rf ~/home/.ecryptor
-sudo ecryptfs-setup-swap
-	REMOVE_ME="if [ -d /home/.ecryptor]; then 
+if [ -d /home/.ecryptfs ]; then
+        sudo deluser ecryptor
+        sudo srm -rf ~/home/.ecryptor	
+	sudo ecryptfs-setup-swap
+        REMOVE_ME="if [ -d /home/.ecryptor]; then 
 /usr/bin/pefsh_cleanup
-fi
+fi"
+        REMOVED_ME="
 "
-REMOVED_ME="
-"
-if [ ! -d /home/.ecryptor ]; then
-	sed -i s|$REMOVE_ME|$REMOVED_ME| $HOME/.profile
+        if [ ! -d /home/.ecryptor ]; then
+                sed -i s|$REMOVE_ME|$REMOVED_ME| $HOME/.profile
+        fi
 fi

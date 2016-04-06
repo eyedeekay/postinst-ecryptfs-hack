@@ -26,7 +26,7 @@ may be added depending on how I feel.
 
         sudo useradd -k /etc/pefsh/skel -d /home/.ecryptor
         echo "if [ -d /home/.ecryptor]; then
-                /usr/bin/pefsh_cleanup
+                /usr/bin/pefsh_cleanup > $HOME/pefsh_cleanup_report.log
         fi
         ">>$HOME/.profile
         PASSWORD=$(apg -n 1)
@@ -36,7 +36,8 @@ may be added depending on how I feel.
         password will be deleted."
         sudo usermod -p $PASSWORD ecryptor
         echo "The temporary user(ecryptor) has been created. Now you will be logged out. You
-        must log back in as ecryptor to complete the procedure."
+        must log back in as ecryptor to complete the procedure. You will be logged out in 60
+        seconds, or you may log out manually."
         sudo pkill -u $(\ls /home)
 
 Then you log in as ecryptor with the password you generated, and ecryptor has
@@ -50,18 +51,21 @@ ample time to read before logging them out automatically, the user should immedi
 log back in as the default user. If that user logs in successfully, pefsh_cleanup will
 run the following commands
 
-        sudo deluser ecryptor
-        sudo srm -rf ~/home/.ecryptor
-        sudo ecryptfs-setup-swap
-        REMOVE_ME="if [ -d /home/.ecryptor]; then 
-                /usr/bin/pefsh_cleanup
-        fi
-        "
+        
+        if [ -d /home/.ecryptfs ]; then
+                sudo deluser ecryptor
+                sudo srm -rf ~/home/.ecryptor	
+                sudo ecryptfs-setup-swap
+                REMOVE_ME="if [ -d /home/.ecryptor]; then 
+        /usr/bin/pefsh_cleanup
+        fi"
         REMOVED_ME="
         "
-        if [ ! -d /home/.ecryptor ]; then
-                sed -i s|$REMOVE_ME|$REMOVED_ME| $HOME/.profile
+                if [ ! -d /home/.ecryptor ]; then
+                        sed -i s|$REMOVE_ME|$REMOVED_ME| $HOME/.profile
+                fi
         fi
+        
 
 Lastly, you should ecryptfs-unwrap-passphrase(on your own) and save the password somewhere
 very safe.

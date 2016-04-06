@@ -11,5 +11,7 @@ your primary user's Home Directory, then both the temporary user and the
 password will be deleted."
 sudo usermod -p $PASSWORD ecryptor
 echo "The temporary user(ecryptor) has been created. Now you will be logged out. You
-must log back in as ecryptor to complete the procedure."
+must log back in as ecryptor to complete the procedure. You will be logged out in 60
+seconds, or you may log out manually."
+sleep 60
 sudo pkill -u $(\ls /home)
