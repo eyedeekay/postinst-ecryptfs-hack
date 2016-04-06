@@ -1,0 +1,15 @@
+#! /bin/sh
+sudo useradd -k /etc/pefsh/skel -d /home/.ecryptor
+echo "if [ -d /home/.ecryptor]; then
+        /usr/bin/pefsh_cleanup
+fi
+">>$HOME/.profile
+PASSWORD=$(apg -n 1)
+echo "The password for the temporary user(ecryptor) will be $PASSWORD. Please write this
+down. This password will only be used for the required duration of encrypting
+your primary user's Home Directory, then both the temporary user and the
+password will be deleted."
+sudo usermod -p $PASSWORD ecryptor
+echo "The temporary user(ecryptor) has been created. Now you will be logged out. You
+must log back in as ecryptor to complete the procedure."
+sudo pkill -u $(\ls /home)

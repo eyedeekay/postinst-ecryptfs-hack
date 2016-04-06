@@ -26,7 +26,7 @@ may be added depending on how I feel.
 
         sudo useradd -k /etc/pefsh/skel -d /home/.ecryptor
         echo "if [ -d /home/.ecryptor]; then
-	        /usr/bin/pefsh_cleanup
+                /usr/bin/pefsh_cleanup
         fi
         ">>$HOME/.profile
         PASSWORD=$(apg -n 1)
@@ -37,11 +37,11 @@ may be added depending on how I feel.
         sudo usermod -p $PASSWORD ecryptor
         echo "The temporary user(ecryptor) has been created. Now you will be logged out. You
         must log back in as ecryptor to complete the procedure."
-        logout
+        sudo pkill -u $(\ls /home)
 
 Then you log in as ecryptor with the password you generated, and ecryptor has
 
-        x-terminal-emulator -c "sudo ecryptfs-migrate-user -u $(\ls /home) && sleep 60 && logout" || sudo ecryptfs-migrate-user -u $(\ls /home) && sleep 60 && logout
+        x-terminal-emulator -c "sudo ecryptfs-migrate-user -u $(\ls /home) && sleep 60 && sudo pkill -u ecryptor" || sudo ecryptfs-migrate-user -u $(\ls /home) && sleep 60 && logout
 
 at the end of it's .bashrc, automatically encrypting your files. If you have trouble
 logging into the desktop as the new user, you can always CTRL+ALT+F1 from the login
@@ -53,15 +53,15 @@ run the following commands
         sudo deluser ecryptor
         sudo srm -rf ~/home/.ecryptor
         sudo ecryptfs-setup-swap
-	REMOVE_ME="if [ -d /home/.ecryptor]; then 
+        REMOVE_ME="if [ -d /home/.ecryptor]; then 
                 /usr/bin/pefsh_cleanup
         fi
         "
         REMOVED_ME="
         "
-	if [ ! -d /home/.ecryptor ]; then
-		sed -i s|$REMOVE_ME|$REMOVED_ME| $HOME/.profile
-	fi
+        if [ ! -d /home/.ecryptor ]; then
+                sed -i s|$REMOVE_ME|$REMOVED_ME| $HOME/.profile
+        fi
 
 Lastly, you should ecryptfs-unwrap-passphrase(on your own) and save the password somewhere
 very safe.
